@@ -26,7 +26,7 @@ Initializing to read from a different directory:
 proc := procfs.From(os.DirFS("/mnt/host/proc"))
 ```
 
-It can also be used with anything implementing the [fs.FS](https://pkg.go.dev/io/fs) interface.
+It can also be used with anything implementing the [fs.FS](https://pkg.go.dev/io/fs#FS) interface.
 
 The procfs filesystem can be read directly as bytes or strings, additionally all the structures contained within this package implement the [encoding.TextUnmarshaler](https://pkg.go.dev/encoding#TextUnmarshaler) interface, which can be used with anything using that interface.
 
@@ -88,3 +88,14 @@ func main() {
 	}
 }
 ```
+
+
+## sysctl
+
+[![Go Reference](https://pkg.go.dev/badge/go.jamescun.com/procfs/sysctl.svg)](https://pkg.go.dev/go.jamescun.com/procfs/sysctl)
+
+```sh
+$ go get go.jamescun.com/procfs/sysctl
+```
+
+This package also contains a wrapper for procfs for reading sysctl Linux Kernel parameters, which are exposed through the procfs filesystem, under the `sys/` subdirectory.

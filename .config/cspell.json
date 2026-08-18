@@ -4,6 +4,6 @@
 	"words": [
 		"proc",
 		"procfs",
-		"sysfs"
+		"sysctl"
 	]
 }
