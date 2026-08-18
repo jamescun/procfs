@@ -1,0 +1,24 @@
+67 1 9:2 / / rw,relatime shared:1 - ext4 /dev/md2 rw,seclabel
+34 67 0:6 / /dev rw,nosuid shared:2 - devtmpfs devtmpfs rw,seclabel,size=32677776k,nr_inodes=8169444,mode=755,inode64
+36 34 0:24 / /dev/shm rw,nosuid,nodev shared:3 - tmpfs tmpfs rw,seclabel,inode64
+37 34 0:25 / /dev/pts rw,nosuid,noexec,relatime shared:4 - devpts devpts rw,seclabel,gid=5,mode=620,ptmxmode=000
+38 67 0:23 / /sys rw,nosuid,nodev,noexec,relatime shared:5 - sysfs sysfs rw,seclabel
+39 38 0:7 / /sys/kernel/security rw,nosuid,nodev,noexec,relatime shared:6 - securityfs securityfs rw
+40 38 0:27 / /sys/fs/cgroup rw,nosuid,nodev,noexec,relatime shared:7 - cgroup2 cgroup2 rw,seclabel,nsdelegate,memory_recursiveprot
+41 38 0:28 / /sys/fs/pstore rw,nosuid,nodev,noexec,relatime shared:8 - pstore pstore rw,seclabel
+42 38 0:29 / /sys/fs/bpf rw,nosuid,nodev,noexec,relatime shared:9 - bpf bpf rw,mode=700
+43 38 0:30 / /sys/kernel/config rw,nosuid,nodev,noexec,relatime shared:10 - configfs configfs rw
+44 67 0:22 / /proc rw,relatime shared:12 - proc proc rw
+45 67 0:26 / /run rw,nosuid,nodev shared:13 - tmpfs tmpfs rw,seclabel,size=13085996k,nr_inodes=819200,mode=755,inode64
+24 38 0:21 / /sys/fs/selinux rw,nosuid,noexec,relatime shared:11 - selinuxfs selinuxfs rw
+23 44 0:31 / /proc/sys/fs/binfmt_misc rw,relatime shared:14 - autofs systemd-1 rw,fd=35,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=305
+25 38 0:13 / /sys/kernel/tracing rw,nosuid,nodev,noexec,relatime shared:15 - tracefs tracefs rw,seclabel
+26 34 0:20 / /dev/mqueue rw,nosuid,nodev,noexec,relatime shared:16 - mqueue mqueue rw,seclabel
+27 34 0:32 / /dev/hugepages rw,nosuid,nodev,relatime shared:17 - hugetlbfs hugetlbfs rw,seclabel,pagesize=2M
+28 38 0:8 / /sys/kernel/debug rw,nosuid,nodev,noexec,relatime shared:18 - debugfs debugfs rw,seclabel
+33 38 0:37 / /sys/fs/fuse/connections rw,nosuid,nodev,noexec,relatime shared:67 - fusectl fusectl rw
+47 67 9:1 / /boot rw,relatime shared:70 - ext3 /dev/md1 rw,seclabel
+342 45 0:45 / /run/credentials/getty@tty1.service ro,nosuid,nodev,noexec,relatime,nosymfollow shared:247 - tmpfs tmpfs rw,seclabel,size=1024k,nr_inodes=1024,mode=700,inode64,noswap
+174 67 9:2 /var/lib/containers/storage/overlay /var/lib/containers/storage/overlay rw,relatime - ext4 /dev/md2 rw,seclabel
+278 23 0:76 / /proc/sys/fs/binfmt_misc rw,nosuid,nodev,noexec,relatime shared:279 - binfmt_misc binfmt_misc rw
+495 45 0:26 /netns /run/netns rw,nosuid,nodev shared:13 - tmpfs tmpfs rw,seclabel,size=13085996k,nr_inodes=819200,mode=755,inode64
