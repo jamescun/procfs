@@ -84,3 +84,59 @@ func TestMeminfo(t *testing.T) {
 		t.Error(cmp.Diff(expected, target))
 	}
 }
+
+func TestModules(t *testing.T) {
+	proc := From(os.DirFS("testdata/proc"))
+
+	expected := Modules{
+		{
+			Name:  "wireguard",
+			Size:  69632,
+			State: "Live",
+		},
+		{
+			Name:      "ip6_udp_tunnel",
+			Size:      12288,
+			Instances: 1,
+			Depends:   []string{"wireguard"},
+			State:     "Live",
+		},
+		{
+			Name:      "udp_tunnel",
+			Size:      24576,
+			Instances: 1,
+			Depends:   []string{"wireguard"},
+			State:     "Live",
+		},
+		{
+			Name:      "libchacha20poly1305",
+			Size:      12288,
+			Instances: 1,
+			Depends:   []string{"wireguard"},
+			State:     "Live",
+		},
+		{
+			Name:      "libcurve25519",
+			Size:      32768,
+			Instances: 1,
+			Depends:   []string{"wireguard"},
+			State:     "Live",
+		},
+		{
+			Name:      "libpoly1305",
+			Size:      16384,
+			Instances: 1,
+			Depends:   []string{"libchacha20poly1305"},
+			State:     "Live",
+		},
+	}
+
+	target, err := GetModules(proc)
+	if err != nil {
+		t.Fatal("unexpected error:", err)
+	}
+
+	if !cmp.Equal(expected, target) {
+		t.Error(cmp.Diff(expected, target))
+	}
+}

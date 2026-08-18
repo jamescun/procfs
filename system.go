@@ -8,6 +8,7 @@ package procfs
 
 import (
 	"strconv"
+	"strings"
 
 	"go.jamescun.com/procfs/internal/utils"
 )
@@ -286,6 +287,79 @@ func (m *Meminfo) UnmarshalText(b []byte) error {
 		case "DirectMap1G":
 			m.DirectMap1G = n
 		}
+	}
+
+	return nil
+}
+
+// Module is a currently loaded Linux Kernel module, read from /proc/modules.
+//
+// References:
+//   - proc_modules(5)
+type Module struct {
+	Name      string
+	Size      uint64
+	Instances int
+	Depends   []string
+	State     string
+}
+
+// UnmarshalText unmarshals a single line from /proc/modules.
+func (m *Module) UnmarshalText(b []byte) error {
+	// the contents are mostly string based, cast to a string and cut that.
+	text := string(b)
+
+	for i, field := range utils.Fields(text) {
+		switch i {
+		case 0:
+			m.Name = field
+		case 1:
+			m.Size, _ = utils.Uint[uint64](field)
+		case 2:
+			m.Instances, _ = utils.Int[int](field)
+		case 3:
+			if field != "-" {
+				m.Depends = strings.Split(field[:len(field)-1], ",")
+			}
+		case 4:
+			m.State = field
+		}
+	}
+
+	return nil
+}
+
+// Modules are the currently loaded Linux Kernel modules, read from
+// /proc/modules.
+//
+// References:
+//   - proc_modules(5)
+type Modules []*Module
+
+// GetModules reads the currently loaded Linux Kernel modules, from
+// /proc/modules in the given [Procfs].
+func GetModules(proc Procfs) (Modules, error) {
+	ms := Modules{}
+
+	err := proc.Read("modules", &ms)
+	if err != nil {
+		return nil, err
+	}
+
+	return ms, nil
+}
+
+// UnmarshalText unmarshals the lines from /proc/modules.
+func (ms *Modules) UnmarshalText(b []byte) error {
+	for _, line := range utils.Lines(b) {
+		m := new(Module)
+
+		err := m.UnmarshalText(line)
+		if err != nil {
+			return err
+		}
+
+		*ms = append(*ms, m)
 	}
 
 	return nil
