@@ -135,7 +135,7 @@ type Meminfo struct {
 	DirectMap1G       uint64
 }
 
-// GetMemInfo get memory, swap and cache usage information, read from
+// GetMeminfo get memory, swap and cache usage information, read from
 // /proc/meminfo in the given [Procfs].
 func GetMeminfo(proc Procfs) (*Meminfo, error) {
 	m := new(Meminfo)
