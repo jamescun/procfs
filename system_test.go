@@ -157,3 +157,80 @@ func TestSwaps(t *testing.T) {
 		t.Error(cmp.Diff(expected, target))
 	}
 }
+
+func TestVMStat(t *testing.T) {
+	proc := From(os.DirFS("testdata/proc"))
+
+	expected := &VMStat{
+		NrFreePages:                1413775,
+		NrFreePagesBlocks:          414208,
+		NrZoneInactiveAnon:         20804,
+		NrZoneActiveAnon:           4249,
+		NrZoneInactiveFile:         5485,
+		NrZoneActiveFile:           40673,
+		NrZoneWritePending:         32,
+		NrZsPages:                  5,
+		NrInactiveAnon:             20804,
+		NrActiveAnon:               4249,
+		NrInactiveFile:             5485,
+		NrActiveFile:               40673,
+		NrSlabReclaimable:          457732,
+		NrSlabUnreclaimable:        75180,
+		WorkingSetNodes:            92812,
+		WorkingSetRefaultFile:      270758664,
+		WorkingSetActivateFile:     78372347,
+		WorkingSetRestoreFile:      8358030,
+		NrAnonPages:                18419,
+		NrMapped:                   24121,
+		NrFilePages:                51884,
+		NrDirty:                    32,
+		NrShmem:                    5653,
+		NrVmscanImmediateReclaim:   6148,
+		NrDirtied:                  39696406,
+		NrWritten:                  39151166,
+		NrFollPinAcquired:          25048,
+		NrFollPinReleased:          25048,
+		NrKernelStack:              4016,
+		NrPageTablePages:           660,
+		NrKernelFilePages:          887,
+		NrDirtyThreshold:           287340,
+		NrDirtyBackgroundThreshold: 143494,
+		NrMemmapBootPages:          32768,
+		Pgpgin:                     896393037,
+		Pgpgout:                    156742252,
+		PgAllocDMA:                 178367,
+		PgAllocNormal:              593108903,
+		PgFree:                     594710212,
+		PgActivate:                 10007239,
+		PgLazyFree:                 40061,
+		PgFault:                    247274650,
+		PgMajFault:                 932938,
+		PgLazyFreed:                12029,
+		PgReuse:                    54652322,
+		PgScanFile:                 306103876,
+		PgStealFile:                285814730,
+		PgRotated:                  9335272,
+		PgMigrateSuccess:           498,
+		CompactMigrateScanned:      2365,
+		CompactFreeScanned:         771,
+		CompactIsolated:            1266,
+		CompactStall:               2,
+		CompactSuccess:             2,
+		UnevictablePgsCulled:       3648,
+		UnevictablePgsRescued:      3648,
+		UnevictablePgsMlocked:      3648,
+		UnevictablePgsMunlocked:    3648,
+		ThpCollapseAlloc:           7,
+		ThpScanExceedNonePte:       10621,
+		ThpZeroPageAlloc:           1,
+	}
+
+	target, err := GetVMStat(proc)
+	if err != nil {
+		t.Fatal("unexpected error:", err)
+	}
+
+	if !cmp.Equal(expected, target) {
+		t.Error(cmp.Diff(expected, target))
+	}
+}

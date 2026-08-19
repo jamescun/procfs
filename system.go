@@ -440,3 +440,524 @@ func (ss *Swaps) UnmarshalText(b []byte) error {
 
 	return nil
 }
+
+// VMStat contains virtual memory statistics, read from /proc/vmstat.
+//
+// Some values are absolute measures, and some are incrementing counters.
+//
+// References:
+//   - proc_vmstat(5)
+type VMStat struct {
+	NrFreePages                 uint64
+	NrFreePagesBlocks           uint64
+	NrZoneInactiveAnon          uint64
+	NrZoneActiveAnon            uint64
+	NrZoneInactiveFile          uint64
+	NrZoneActiveFile            uint64
+	NrZoneUnevictable           uint64
+	NrZoneWritePending          uint64
+	NrMlock                     uint64
+	NrZsPages                   uint64
+	NrFreeCma                   uint64
+	NrInactiveAnon              uint64
+	NrActiveAnon                uint64
+	NrInactiveFile              uint64
+	NrActiveFile                uint64
+	NrUnevictable               uint64
+	NrSlabReclaimable           uint64
+	NrSlabUnreclaimable         uint64
+	NrIsolatedAnon              uint64
+	NrIsolatedFile              uint64
+	WorkingSetNodes             uint64
+	WorkingSetRefaultAnon       uint64
+	WorkingSetRefaultFile       uint64
+	WorkingSetActivateAnon      uint64
+	WorkingSetActivateFile      uint64
+	WorkingSetRestoreAnon       uint64
+	WorkingSetRestoreFile       uint64
+	WorkingSetNodeReclaim       uint64
+	NrAnonPages                 uint64
+	NrMapped                    uint64
+	NrFilePages                 uint64
+	NrDirty                     uint64
+	NrWriteback                 uint64
+	NrShmem                     uint64
+	NrShmemHugePages            uint64
+	NrShmemPmdMapped            uint64
+	NrFileHugePages             uint64
+	NrFilePmdMapped             uint64
+	NrAnonTransparentHugePages  uint64
+	NrVmscanWrite               uint64
+	NrVmscanImmediateReclaim    uint64
+	NrDirtied                   uint64
+	NrWritten                   uint64
+	NrThrottledWritten          uint64
+	NrKernelMiscReclaimable     uint64
+	NrFollPinAcquired           uint64
+	NrFollPinReleased           uint64
+	NrKernelStack               uint64
+	NrPageTablePages            uint64
+	NrSecPageTablePages         uint64
+	NrSwapCached                uint64
+	PgDemoteKswapd              uint64
+	PgDemoteDirect              uint64
+	PgDemoteKHugePaged          uint64
+	PgDemoteProactive           uint64
+	NrBalloonPages              uint64
+	NrKernelFilePages           uint64
+	NrDirtyThreshold            uint64
+	NrDirtyBackgroundThreshold  uint64
+	NrMemmapPages               uint64
+	NrMemmapBootPages           uint64
+	Pgpgin                      uint64
+	Pgpgout                     uint64
+	Pswpin                      uint64
+	Pswpout                     uint64
+	PgAllocDMA                  uint64
+	PgAllocDMA32                uint64
+	PgAllocNormal               uint64
+	PgAllocMovable              uint64
+	AllocStallDMA               uint64
+	AllocStallDMA32             uint64
+	AllocStallNormal            uint64
+	AllocStallMovable           uint64
+	PgSkipDMA                   uint64
+	PgSkipDMA32                 uint64
+	PgSkipNormal                uint64
+	PgSkipMovable               uint64
+	PgFree                      uint64
+	PgActivate                  uint64
+	PgDeactivate                uint64
+	PgLazyFree                  uint64
+	PgFault                     uint64
+	PgMajFault                  uint64
+	PgLazyFreed                 uint64
+	PgRefill                    uint64
+	PgReuse                     uint64
+	PgStealKswapd               uint64
+	PgStealDirect               uint64
+	PgStealKHugePaged           uint64
+	PgStealProactive            uint64
+	PgScanKswapd                uint64
+	PgScanDirect                uint64
+	PgScanKHugePaged            uint64
+	PgScanProactive             uint64
+	PgScanDirectThrottle        uint64
+	PgScanAnon                  uint64
+	PgScanFile                  uint64
+	PgStealAnon                 uint64
+	PgStealFile                 uint64
+	PgInodeSteal                uint64
+	SlabsScanned                uint64
+	KswapdInodeSteal            uint64
+	KswapdLowWmarkHitQuickly    uint64
+	KswapdHighWmarkHitQuickly   uint64
+	PageOutRun                  uint64
+	PgRotated                   uint64
+	DropPageCache               uint64
+	DropSlab                    uint64
+	OomKill                     uint64
+	PgMigrateSuccess            uint64
+	PgMigrateFail               uint64
+	ThpMigrationSuccess         uint64
+	ThpMigrationFail            uint64
+	ThpMigrationSplit           uint64
+	CompactMigrateScanned       uint64
+	CompactFreeScanned          uint64
+	CompactIsolated             uint64
+	CompactStall                uint64
+	CompactFail                 uint64
+	CompactSuccess              uint64
+	CompactDaemonWake           uint64
+	CompactDaemonMigrateScanned uint64
+	CompactDaemonFreeScanned    uint64
+	UnevictablePgsCulled        uint64
+	UnevictablePgsScanned       uint64
+	UnevictablePgsRescued       uint64
+	UnevictablePgsMlocked       uint64
+	UnevictablePgsMunlocked     uint64
+	UnevictablePgsCleared       uint64
+	UnevictablePgsStranded      uint64
+	ThpFaultAlloc               uint64
+	ThpFaultFallback            uint64
+	ThpFaultFallbackCharge      uint64
+	ThpCollapseAlloc            uint64
+	ThpCollapseAllocFailed      uint64
+	ThpFileAlloc                uint64
+	ThpFileFallback             uint64
+	ThpFileFallbackCharge       uint64
+	ThpFileMapped               uint64
+	ThpSplitPage                uint64
+	ThpSplitPageFailed          uint64
+	ThpDeferredSplitPage        uint64
+	ThpUnderusedSplitPage       uint64
+	ThpSplitPmd                 uint64
+	ThpScanExceedNonePte        uint64
+	ThpScanExceedSwapPte        uint64
+	ThpScanExceedSharePte       uint64
+	ThpZeroPageAlloc            uint64
+	ThpZeroPageAllocFailed      uint64
+	ThpSwpout                   uint64
+	ThpSwpoutFallback           uint64
+	BalloonInflate              uint64
+	BalloonDeflate              uint64
+	BalloonMigrate              uint64
+	SwapRa                      uint64
+	SwapRaHit                   uint64
+	SwpinZero                   uint64
+	SwpoutZero                  uint64
+	NrUnstable                  uint64
+}
+
+// GetVMStat gets virtual memory statistics about the system, read from
+// /proc/vmstat in the given [Procfs].
+func GetVMStat(proc Procfs) (*VMStat, error) {
+	vm := &VMStat{}
+
+	err := proc.Read("vmstat", vm)
+	if err != nil {
+		return nil, err
+	}
+
+	return vm, nil
+}
+
+// UnmarshalText unmarshals the lines from /proc/vmstat.
+func (v *VMStat) UnmarshalText(b []byte) error {
+	for _, line := range utils.Lines(b) {
+		key, value, split := utils.Split(line, func(b byte) bool {
+			return b == ' '
+		})
+		if !split {
+			continue
+		}
+
+		n, ok := utils.Uint[uint64](value)
+		if !ok {
+			continue
+		}
+
+		switch string(key) {
+		case "nr_free_pages":
+			v.NrFreePages = n
+		case "nr_free_pages_blocks":
+			v.NrFreePagesBlocks = n
+		case "nr_zone_inactive_anon":
+			v.NrZoneInactiveAnon = n
+		case "nr_zone_active_anon":
+			v.NrZoneActiveAnon = n
+		case "nr_zone_inactive_file":
+			v.NrZoneInactiveFile = n
+		case "nr_zone_active_file":
+			v.NrZoneActiveFile = n
+		case "nr_zone_unevictable":
+			v.NrZoneUnevictable = n
+		case "nr_zone_write_pending":
+			v.NrZoneWritePending = n
+		case "nr_mlock":
+			v.NrMlock = n
+		case "nr_zspages":
+			v.NrZsPages = n
+		case "nr_free_cma":
+			v.NrFreeCma = n
+		case "nr_inactive_anon":
+			v.NrInactiveAnon = n
+		case "nr_active_anon":
+			v.NrActiveAnon = n
+		case "nr_inactive_file":
+			v.NrInactiveFile = n
+		case "nr_active_file":
+			v.NrActiveFile = n
+		case "nr_unevictable":
+			v.NrUnevictable = n
+		case "nr_slab_reclaimable":
+			v.NrSlabReclaimable = n
+		case "nr_slab_unreclaimable":
+			v.NrSlabUnreclaimable = n
+		case "nr_isolated_anon":
+			v.NrIsolatedAnon = n
+		case "nr_isolated_file":
+			v.NrIsolatedFile = n
+		case "workingset_nodes":
+			v.WorkingSetNodes = n
+		case "workingset_refault_anon":
+			v.WorkingSetRefaultAnon = n
+		case "workingset_refault_file":
+			v.WorkingSetRefaultFile = n
+		case "workingset_activate_anon":
+			v.WorkingSetActivateAnon = n
+		case "workingset_activate_file":
+			v.WorkingSetActivateFile = n
+		case "workingset_restore_anon":
+			v.WorkingSetRestoreAnon = n
+		case "workingset_restore_file":
+			v.WorkingSetRestoreFile = n
+		case "workingset_nodereclaim":
+			v.WorkingSetNodeReclaim = n
+		case "nr_anon_pages":
+			v.NrAnonPages = n
+		case "nr_mapped":
+			v.NrMapped = n
+		case "nr_file_pages":
+			v.NrFilePages = n
+		case "nr_dirty":
+			v.NrDirty = n
+		case "nr_writeback":
+			v.NrWriteback = n
+		case "nr_shmem":
+			v.NrShmem = n
+		case "nr_shmem_hugepages":
+			v.NrShmemHugePages = n
+		case "nr_shmem_pmdmapped":
+			v.NrShmemPmdMapped = n
+		case "nr_file_hugepages":
+			v.NrFileHugePages = n
+		case "nr_file_pmdmapped":
+			v.NrFilePmdMapped = n
+		case "nr_anon_transparent_hugepages":
+			v.NrAnonTransparentHugePages = n
+		case "nr_vmscan_write":
+			v.NrVmscanWrite = n
+		case "nr_vmscan_immediate_reclaim":
+			v.NrVmscanImmediateReclaim = n
+		case "nr_dirtied":
+			v.NrDirtied = n
+		case "nr_written":
+			v.NrWritten = n
+		case "nr_throttled_written":
+			v.NrThrottledWritten = n
+		case "nr_kernel_misc_reclaimable":
+			v.NrKernelMiscReclaimable = n
+		case "nr_foll_pin_acquired":
+			v.NrFollPinAcquired = n
+		case "nr_foll_pin_released":
+			v.NrFollPinReleased = n
+		case "nr_kernel_stack":
+			v.NrKernelStack = n
+		case "nr_page_table_pages":
+			v.NrPageTablePages = n
+		case "nr_sec_page_table_pages":
+			v.NrSecPageTablePages = n
+		case "nr_swapcached":
+			v.NrSwapCached = n
+		case "pgdemote_kswapd":
+			v.PgDemoteKswapd = n
+		case "pgdemote_direct":
+			v.PgDemoteDirect = n
+		case "pgdemote_khugepaged":
+			v.PgDemoteKHugePaged = n
+		case "pgdemote_proactive":
+			v.PgDemoteProactive = n
+		case "nr_balloon_pages":
+			v.NrBalloonPages = n
+		case "nr_kernel_file_pages":
+			v.NrKernelFilePages = n
+		case "nr_dirty_threshold":
+			v.NrDirtyThreshold = n
+		case "nr_dirty_background_threshold":
+			v.NrDirtyBackgroundThreshold = n
+		case "nr_memmap_pages":
+			v.NrMemmapPages = n
+		case "nr_memmap_boot_pages":
+			v.NrMemmapBootPages = n
+		case "pgpgin":
+			v.Pgpgin = n
+		case "pgpgout":
+			v.Pgpgout = n
+		case "pswpin":
+			v.Pswpin = n
+		case "pswpout":
+			v.Pswpout = n
+		case "pgalloc_dma":
+			v.PgAllocDMA = n
+		case "pgalloc_dma32":
+			v.PgAllocDMA32 = n
+		case "pgalloc_normal":
+			v.PgAllocNormal = n
+		case "pgalloc_movable":
+			v.PgAllocMovable = n
+		case "allocstall_dma":
+			v.AllocStallDMA = n
+		case "allocstall_dma32":
+			v.AllocStallDMA32 = n
+		case "allocstall_normal":
+			v.AllocStallNormal = n
+		case "allocstall_movable":
+			v.AllocStallMovable = n
+		case "pgskip_dma":
+			v.PgSkipDMA = n
+		case "pgskip_dma32":
+			v.PgSkipDMA32 = n
+		case "pgskip_normal":
+			v.PgSkipNormal = n
+		case "pgskip_movable":
+			v.PgSkipMovable = n
+		case "pgfree":
+			v.PgFree = n
+		case "pgactivate":
+			v.PgActivate = n
+		case "pgdeactivate":
+			v.PgDeactivate = n
+		case "pglazyfree":
+			v.PgLazyFree = n
+		case "pgfault":
+			v.PgFault = n
+		case "pgmajfault":
+			v.PgMajFault = n
+		case "pglazyfreed":
+			v.PgLazyFreed = n
+		case "pgrefill":
+			v.PgRefill = n
+		case "pgreuse":
+			v.PgReuse = n
+		case "pgsteal_kswapd":
+			v.PgStealKswapd = n
+		case "pgsteal_direct":
+			v.PgStealDirect = n
+		case "pgsteal_khugepaged":
+			v.PgStealKHugePaged = n
+		case "pgsteal_proactive":
+			v.PgStealProactive = n
+		case "pgscan_kswapd":
+			v.PgScanKswapd = n
+		case "pgscan_direct":
+			v.PgScanDirect = n
+		case "pgscan_khugepaged":
+			v.PgScanKHugePaged = n
+		case "pgscan_proactive":
+			v.PgScanProactive = n
+		case "pgscan_direct_throttle":
+			v.PgScanDirectThrottle = n
+		case "pgscan_anon":
+			v.PgScanAnon = n
+		case "pgscan_file":
+			v.PgScanFile = n
+		case "pgsteal_anon":
+			v.PgStealAnon = n
+		case "pgsteal_file":
+			v.PgStealFile = n
+		case "pginodesteal":
+			v.PgInodeSteal = n
+		case "slabs_scanned":
+			v.SlabsScanned = n
+		case "kswapd_inodesteal":
+			v.KswapdInodeSteal = n
+		case "kswapd_low_wmark_hit_quickly":
+			v.KswapdLowWmarkHitQuickly = n
+		case "kswapd_high_wmark_hit_quickly":
+			v.KswapdHighWmarkHitQuickly = n
+		case "pageoutrun":
+			v.PageOutRun = n
+		case "pgrotated":
+			v.PgRotated = n
+		case "drop_pagecache":
+			v.DropPageCache = n
+		case "drop_slab":
+			v.DropSlab = n
+		case "oom_kill":
+			v.OomKill = n
+		case "pgmigrate_success":
+			v.PgMigrateSuccess = n
+		case "pgmigrate_fail":
+			v.PgMigrateFail = n
+		case "thp_migration_success":
+			v.ThpMigrationSuccess = n
+		case "thp_migration_fail":
+			v.ThpMigrationFail = n
+		case "thp_migration_split":
+			v.ThpMigrationSplit = n
+		case "compact_migrate_scanned":
+			v.CompactMigrateScanned = n
+		case "compact_free_scanned":
+			v.CompactFreeScanned = n
+		case "compact_isolated":
+			v.CompactIsolated = n
+		case "compact_stall":
+			v.CompactStall = n
+		case "compact_fail":
+			v.CompactFail = n
+		case "compact_success":
+			v.CompactSuccess = n
+		case "compact_daemon_wake":
+			v.CompactDaemonWake = n
+		case "compact_daemon_migrate_scanned":
+			v.CompactDaemonMigrateScanned = n
+		case "compact_daemon_free_scanned":
+			v.CompactDaemonFreeScanned = n
+		case "unevictable_pgs_culled":
+			v.UnevictablePgsCulled = n
+		case "unevictable_pgs_scanned":
+			v.UnevictablePgsScanned = n
+		case "unevictable_pgs_rescued":
+			v.UnevictablePgsRescued = n
+		case "unevictable_pgs_mlocked":
+			v.UnevictablePgsMlocked = n
+		case "unevictable_pgs_munlocked":
+			v.UnevictablePgsMunlocked = n
+		case "unevictable_pgs_cleared":
+			v.UnevictablePgsCleared = n
+		case "unevictable_pgs_stranded":
+			v.UnevictablePgsStranded = n
+		case "thp_fault_alloc":
+			v.ThpFaultAlloc = n
+		case "thp_fault_fallback":
+			v.ThpFaultFallback = n
+		case "thp_fault_fallback_charge":
+			v.ThpFaultFallbackCharge = n
+		case "thp_collapse_alloc":
+			v.ThpCollapseAlloc = n
+		case "thp_collapse_alloc_failed":
+			v.ThpCollapseAllocFailed = n
+		case "thp_file_alloc":
+			v.ThpFileAlloc = n
+		case "thp_file_fallback":
+			v.ThpFileFallback = n
+		case "thp_file_fallback_charge":
+			v.ThpFileFallbackCharge = n
+		case "thp_file_mapped":
+			v.ThpFileMapped = n
+		case "thp_split_page":
+			v.ThpSplitPage = n
+		case "thp_split_page_failed":
+			v.ThpSplitPageFailed = n
+		case "thp_deferred_split_page":
+			v.ThpDeferredSplitPage = n
+		case "thp_underused_split_page":
+			v.ThpUnderusedSplitPage = n
+		case "thp_split_pmd":
+			v.ThpSplitPmd = n
+		case "thp_scan_exceed_none_pte":
+			v.ThpScanExceedNonePte = n
+		case "thp_scan_exceed_swap_pte":
+			v.ThpScanExceedSwapPte = n
+		case "thp_scan_exceed_share_pte":
+			v.ThpScanExceedSharePte = n
+		case "thp_zero_page_alloc":
+			v.ThpZeroPageAlloc = n
+		case "thp_zero_page_alloc_failed":
+			v.ThpZeroPageAllocFailed = n
+		case "thp_swpout":
+			v.ThpSwpout = n
+		case "thp_swpout_fallback":
+			v.ThpSwpoutFallback = n
+		case "balloon_inflate":
+			v.BalloonInflate = n
+		case "balloon_deflate":
+			v.BalloonDeflate = n
+		case "balloon_migrate":
+			v.BalloonMigrate = n
+		case "swap_ra":
+			v.SwapRa = n
+		case "swap_ra_hit":
+			v.SwapRaHit = n
+		case "swpin_zero":
+			v.SwpinZero = n
+		case "swpout_zero":
+			v.SwpoutZero = n
+		case "nr_unstable":
+			v.NrUnstable = n
+		}
+	}
+
+	return nil
+}
