@@ -13,6 +13,153 @@ import (
 	"go.jamescun.com/procfs/internal/utils"
 )
 
+// CPUStat is either the sum processor time spent or time spent for a single
+// processor in [CPUStats], read from /proc/stat.
+//
+// References:
+//   - proc_stat(5)
+type CPUStat struct {
+	CPU       int
+	User      uint64
+	Nice      uint64
+	System    uint64
+	Idle      uint64
+	IOWait    uint64
+	IRQ       uint64
+	SoftIRQ   uint64
+	Steal     uint64
+	Guest     uint64
+	GuestNice uint64
+}
+
+// UnmarshalText unmarshals a single processor line from /proc/stat.
+func (c *CPUStat) UnmarshalText(b []byte) error {
+	for i, field := range utils.Fields(b) {
+		if i == 0 {
+			// total cpu value does not have a CPU number.
+			if !utils.Equal(field, "cpu") {
+				c.CPU, _ = utils.Int[int](field[3:])
+			}
+
+			continue
+		}
+
+		n, ok := utils.Uint[uint64](field)
+		if !ok {
+			continue
+		}
+
+		switch i {
+		case 1:
+			c.User = n
+		case 2:
+			c.Nice = n
+		case 3:
+			c.System = n
+		case 4:
+			c.Idle = n
+		case 5:
+			c.IOWait = n
+		case 6:
+			c.IRQ = n
+		case 7:
+			c.SoftIRQ = n
+		case 8:
+			c.Steal = n
+		case 9:
+			c.Guest = n
+		case 10:
+			c.GuestNice = n
+		}
+	}
+
+	return nil
+}
+
+// CPUStats contains statistics about processor time and running processes,
+// read from /proc/stat.
+//
+// References:
+//   - proc_stat(5)
+type CPUStats struct {
+	Total        CPUStat
+	CPU          []*CPUStat
+	Ctxt         uint64
+	Btime        uint64
+	Processes    uint64
+	ProcsRunning uint64
+	ProcsBlocked uint64
+}
+
+// GetCPUStats reads statistics about processor time and running processed,
+// read from /proc/stat in the given [Procfs].
+func GetCPUStats(proc Procfs) (*CPUStats, error) {
+	cs := new(CPUStats)
+
+	err := proc.Read("stat", cs)
+	if err != nil {
+		return nil, err
+	}
+
+	return cs, nil
+}
+
+// UnmarshalText unmarshals the lines from /proc/stat.
+func (cs *CPUStats) UnmarshalText(b []byte) error {
+	for i, line := range utils.Lines(b) {
+		if i == 0 {
+			// first line is always the total CPUStat.
+			err := cs.Total.UnmarshalText(line)
+			if err != nil {
+				return err
+			}
+
+			continue
+		}
+
+		key, value, split := utils.Split(line, func(b byte) bool {
+			return b == ' '
+		})
+		if !split {
+			continue
+		}
+
+		if utils.HasPrefix(key, "cpu") {
+			// per-processor CPUStat entry.
+			c := new(CPUStat)
+
+			err := c.UnmarshalText(line)
+			if err != nil {
+				return err
+			}
+
+			cs.CPU = append(cs.CPU, c)
+			continue
+		}
+
+		// everything else is a uint64.
+		n, ok := utils.Uint[uint64](value)
+		if !ok {
+			continue
+		}
+
+		switch string(key) {
+		case "ctxt":
+			cs.Ctxt = n
+		case "btime":
+			cs.Btime = n
+		case "processes":
+			cs.Processes = n
+		case "procs_running":
+			cs.ProcsRunning = n
+		case "procs_blocked":
+			cs.ProcsBlocked = n
+		}
+	}
+
+	return nil
+}
+
 // LoadAvg contains information about the systems load and scheduling, read
 // from /proc/loadavg.
 //

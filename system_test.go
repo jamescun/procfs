@@ -13,6 +13,156 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
+func TestCPUStats(t *testing.T) {
+	proc := From(os.DirFS("testdata/proc"))
+
+	expected := &CPUStats{
+		Total: CPUStat{
+			User:    7305537,
+			Nice:    121612,
+			System:  8966416,
+			Idle:    19247232615,
+			IOWait:  50564,
+			IRQ:     2277989,
+			SoftIRQ: 1522575,
+		},
+		CPU: []*CPUStat{
+			{
+				User:    637717,
+				Nice:    9545,
+				System:  712619,
+				Idle:    1603991825,
+				IOWait:  2979,
+				IRQ:     171486,
+				SoftIRQ: 150508,
+			},
+			{
+				CPU:     1,
+				User:    722067,
+				Nice:    10165,
+				System:  989545,
+				Idle:    1603492829,
+				IOWait:  5334,
+				IRQ:     212102,
+				SoftIRQ: 135687,
+			},
+			{
+				CPU:     2,
+				User:    683438,
+				Nice:    10755,
+				System:  903539,
+				Idle:    1603621445,
+				IOWait:  4119,
+				IRQ:     217079,
+				SoftIRQ: 142470,
+			},
+			{
+				CPU:     3,
+				User:    650600,
+				Nice:    11209,
+				System:  938359,
+				Idle:    1603638622,
+				IOWait:  4875,
+				IRQ:     203242,
+				SoftIRQ: 127266,
+			},
+			{
+				CPU:     4,
+				User:    723856,
+				Nice:    13536,
+				System:  982340,
+				Idle:    1603426754,
+				IOWait:  5909,
+				IRQ:     228740,
+				SoftIRQ: 177710,
+			},
+			{
+				CPU:     5,
+				User:    644415,
+				Nice:    9319,
+				System:  1022556,
+				Idle:    1603505719,
+				IOWait:  4909,
+				IRQ:     212329,
+				SoftIRQ: 136258,
+			},
+			{
+				CPU:     6,
+				User:    689617,
+				Nice:    9515,
+				System:  910987,
+				Idle:    1603666256,
+				IOWait:  4263,
+				IRQ:     205287,
+				SoftIRQ: 124174,
+			},
+			{
+				CPU:     7,
+				User:    593386,
+				Nice:    10222,
+				System:  647838,
+				Idle:    1604151382,
+				IOWait:  4265,
+				IRQ:     161602,
+				SoftIRQ: 88420,
+			},
+			{
+				CPU:     8,
+				User:    590274,
+				Nice:    10283,
+				System:  545032,
+				Idle:    1604238210,
+				IOWait:  3809,
+				IRQ:     174132,
+				SoftIRQ: 111149,
+			},
+			{
+				CPU:     9,
+				User:    579424,
+				Nice:    9826,
+				System:  529822,
+				Idle:    1604285692,
+				IOWait:  3716,
+				IRQ:     168862,
+				SoftIRQ: 101781,
+			},
+			{
+				CPU:     10,
+				User:    266490,
+				Nice:    8765,
+				System:  284367,
+				Idle:    1604919890,
+				IOWait:  2823,
+				IRQ:     126592,
+				SoftIRQ: 67011,
+			},
+			{
+				CPU:     11,
+				User:    524247,
+				Nice:    8468,
+				System:  499406,
+				Idle:    1604293987,
+				IOWait:  3557,
+				IRQ:     196528,
+				SoftIRQ: 160134,
+			},
+		},
+		Ctxt:         10939017265,
+		Btime:        1771085005,
+		Processes:    5773423,
+		ProcsRunning: 1,
+	}
+
+	target, err := GetCPUStats(proc)
+	if err != nil {
+		t.Fatal("unexpected error:", err)
+	}
+
+	if !cmp.Equal(expected, target) {
+		t.Error(cmp.Diff(expected, target))
+	}
+}
+
 func TestLoadAvg(t *testing.T) {
 	proc := From(os.DirFS("testdata/proc"))
 
