@@ -9,6 +9,7 @@ package procfs
 import (
 	"os"
 	"testing"
+	"time"
 
 	"github.com/google/go-cmp/cmp"
 )
@@ -299,6 +300,24 @@ func TestSwaps(t *testing.T) {
 	}
 
 	target, err := GetSwaps(proc)
+	if err != nil {
+		t.Fatal("unexpected error:", err)
+	}
+
+	if !cmp.Equal(expected, target) {
+		t.Error(cmp.Diff(expected, target))
+	}
+}
+
+func TestUptime(t *testing.T) {
+	proc := From(os.DirFS("testdata/proc"))
+
+	expected := &Uptime{
+		Up:   16072645 * time.Second,
+		Idle: 192637915 * time.Second,
+	}
+
+	target, err := GetUptime(proc)
 	if err != nil {
 		t.Fatal("unexpected error:", err)
 	}

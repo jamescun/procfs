@@ -9,6 +9,7 @@ package procfs
 import (
 	"strconv"
 	"strings"
+	"time"
 
 	"go.jamescun.com/procfs/internal/utils"
 )
@@ -583,6 +584,53 @@ func (ss *Swaps) UnmarshalText(b []byte) error {
 		}
 
 		*ss = append(*ss, s)
+	}
+
+	return nil
+}
+
+// Uptime contains system uptime information, read from /proc/uptime.
+//
+// References:
+//   - proc_uptime(5)
+type Uptime struct {
+	Up   time.Duration
+	Idle time.Duration
+}
+
+// GetUptime reads system uptime information, read from /proc/uptime in the
+// given [Procfs].
+func GetUptime(proc Procfs) (*Uptime, error) {
+	u := new(Uptime)
+
+	err := proc.Read("uptime", u)
+	if err != nil {
+		return nil, err
+	}
+
+	return u, nil
+}
+
+// UnmarshalText unmarshals the line from /proc/uptime.
+func (u *Uptime) UnmarshalText(b []byte) error {
+	for i, field := range utils.Fields(b) {
+		switch i {
+		case 0:
+			field, _, _ = utils.Split(field, func(b byte) bool {
+				return b == '.'
+			})
+
+			value, _ := utils.Int[time.Duration](field)
+			u.Up = value * time.Second
+
+		case 1:
+			field, _, _ = utils.Split(field, func(b byte) bool {
+				return b == '.'
+			})
+
+			value, _ := utils.Int[time.Duration](field)
+			u.Idle = value * time.Second
+		}
 	}
 
 	return nil
