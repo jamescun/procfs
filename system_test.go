@@ -140,3 +140,20 @@ func TestModules(t *testing.T) {
 		t.Error(cmp.Diff(expected, target))
 	}
 }
+
+func TestSwaps(t *testing.T) {
+	proc := From(os.DirFS("testdata/proc"))
+
+	expected := Swaps{
+		{Name: "/dev/md0", Type: "partition", Size: 33520636, Priority: -2},
+	}
+
+	target, err := GetSwaps(proc)
+	if err != nil {
+		t.Fatal("unexpected error:", err)
+	}
+
+	if !cmp.Equal(expected, target) {
+		t.Error(cmp.Diff(expected, target))
+	}
+}

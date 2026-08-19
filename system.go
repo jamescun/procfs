@@ -364,3 +364,79 @@ func (ms *Modules) UnmarshalText(b []byte) error {
 
 	return nil
 }
+
+// Swap is one of the swap devices configured, read from /proc/swaps.
+//
+// References:
+//   - proc_swaps(5)
+//   - linux/mm/swapfile.c swap_show
+type Swap struct {
+	Name     string
+	Type     string
+	Size     uint64
+	Used     uint64
+	Priority int
+}
+
+// UnmarshalText unmarshals a single line from /proc/swaps.
+func (s *Swap) UnmarshalText(b []byte) error {
+	// the contents are mostly string based, cast to a string and cut that.
+	text := string(b)
+
+	for i, field := range utils.Fields(text) {
+		switch i {
+		case 0:
+			s.Name = field
+		case 1:
+			s.Type = field
+		case 2:
+			s.Size, _ = utils.Uint[uint64](field)
+		case 3:
+			s.Used, _ = utils.Uint[uint64](field)
+		case 4:
+			s.Priority, _ = utils.Int[int](field)
+		}
+	}
+
+	return nil
+}
+
+// Swaps are the swap devices configured for the system, read from /proc/swaps.
+//
+// References:
+//   - proc_swaps(5)
+//   - linux/mm/swapfile.c swap_show
+type Swaps []*Swap
+
+// GetSwaps reads the swap devices configured for the system, read from
+// proc/swaps in the given [Procfs].
+func GetSwaps(proc Procfs) (Swaps, error) {
+	ss := Swaps{}
+
+	err := proc.Read("swaps", &ss)
+	if err != nil {
+		return nil, err
+	}
+
+	return ss, nil
+}
+
+// UnmarshalText unmarshals the lines from /proc/swaps.
+func (ss *Swaps) UnmarshalText(b []byte) error {
+	for i, line := range utils.Lines(b) {
+		if i == 0 {
+			// skip header.
+			continue
+		}
+
+		s := new(Swap)
+		err := s.UnmarshalText(line)
+		if err != nil {
+			return err
+		}
+
+		*ss = append(*ss, s)
+	}
+
+	return nil
+}
