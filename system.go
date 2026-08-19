@@ -14,6 +14,80 @@ import (
 	"go.jamescun.com/procfs/internal/utils"
 )
 
+// Cgroup contains details of a single cgroup subsystem, read from
+// /proc/cgroups.
+//
+// References:
+//   - proc_groups
+type Cgroup struct {
+	Name       string
+	Hierarchy  int
+	NumCgroups int
+	Enabled    bool
+}
+
+// UnmarshalText unmarshals a single line from /proc/cgroups.
+func (c *Cgroup) UnmarshalText(b []byte) error {
+	for i, field := range utils.Fields(b) {
+		switch i {
+		case 0:
+			c.Name = string(field)
+		case 1:
+			c.Hierarchy, _ = utils.Int[int](field)
+		case 2:
+			c.NumCgroups, _ = utils.Int[int](field)
+		case 3:
+			enabled, _ := utils.Int[int](field)
+			if enabled != 0 {
+				c.Enabled = true
+			}
+		}
+	}
+
+	return nil
+}
+
+// Cgroups contains the details of the systems cgroup subsystems, read from
+// /proc/cgroups.
+//
+// References:
+//   - proc_groups
+type Cgroups []*Cgroup
+
+// GetCgroups reads the systems cgroup subsystems, read from /proc/cgroups in
+// the given [Procfs].
+func GetCgroups(proc Procfs) (Cgroups, error) {
+	cs := Cgroups{}
+
+	err := proc.Read("cgroups", &cs)
+	if err != nil {
+		return nil, err
+	}
+
+	return cs, nil
+}
+
+// UnmarshalText unmarshals the lines from /proc/cgroups.
+func (cs *Cgroups) UnmarshalText(b []byte) error {
+	for i, line := range utils.Lines(b) {
+		if i == 0 {
+			// skip header.
+			continue
+		}
+
+		c := new(Cgroup)
+
+		err := c.UnmarshalText(line)
+		if err != nil {
+			return err
+		}
+
+		*cs = append(*cs, c)
+	}
+
+	return nil
+}
+
 // CPUStat is either the sum processor time spent or time spent for a single
 // processor in [CPUStats], read from /proc/stat.
 //

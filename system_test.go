@@ -14,6 +14,37 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
+func TestCGroups(t *testing.T) {
+	proc := From(os.DirFS("testdata/proc"))
+
+	expected := Cgroups{
+		{Name: "cpuset", NumCgroups: 1759, Enabled: true},
+		{Name: "cpu", NumCgroups: 1759, Enabled: true},
+		{Name: "cpuacct", NumCgroups: 1759, Enabled: true},
+		{Name: "blkio", NumCgroups: 1759, Enabled: true},
+		{Name: "memory", NumCgroups: 1759, Enabled: true},
+		{Name: "devices", NumCgroups: 1759, Enabled: true},
+		{Name: "freezer", NumCgroups: 1759, Enabled: true},
+		{Name: "net_cls", NumCgroups: 1759, Enabled: true},
+		{Name: "perf_event", NumCgroups: 1759, Enabled: true},
+		{Name: "net_prio", NumCgroups: 1759, Enabled: true},
+		{Name: "hugetlb", NumCgroups: 1759, Enabled: true},
+		{Name: "pids", NumCgroups: 1759, Enabled: true},
+		{Name: "rdma", NumCgroups: 1759, Enabled: true},
+		{Name: "misc", NumCgroups: 1759, Enabled: true},
+		{Name: "dmem", NumCgroups: 1759, Enabled: true},
+	}
+
+	target, err := GetCgroups(proc)
+	if err != nil {
+		t.Fatal("unexpected error:", err)
+	}
+
+	if !cmp.Equal(expected, target) {
+		t.Error(cmp.Diff(expected, target))
+	}
+}
+
 func TestCPUStats(t *testing.T) {
 	proc := From(os.DirFS("testdata/proc"))
 
