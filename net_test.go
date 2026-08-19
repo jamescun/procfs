@@ -88,3 +88,20 @@ func TestLinkStats(t *testing.T) {
 		t.Error(cmp.Diff(expected, target))
 	}
 }
+
+func TestWirelessStats(t *testing.T) {
+	proc := From(os.DirFS("testdata/proc"))
+
+	expected := WirelessStats{
+		{Name: "wlan0", Quality: 68, Level: -42, Noise: -256, Retry: 4334},
+	}
+
+	target, err := GetWirelessStats(proc)
+	if err != nil {
+		t.Fatal("unexpected error:", err)
+	}
+
+	if !cmp.Equal(expected, target) {
+		t.Error(cmp.Diff(expected, target))
+	}
+}
