@@ -1,0 +1,61 @@
+I: Bus=0019 Vendor=0000 Product=0001 Version=0000
+N: Name="Power Button"
+P: Phys=PNP0C0C/button/input0
+S: Sysfs=/devices/platform/PNP0C0C:00/input/input0
+U: Uniq=
+H: Handlers=kbd event0
+B: PROP=0
+B: EV=3
+B: KEY=8000 10000000000000 0
+
+I: Bus=0019 Vendor=0000 Product=0001 Version=0000
+N: Name="Power Button"
+P: Phys=LNXPWRBN/button/input0
+S: Sysfs=/devices/platform/LNXPWRBN:00/input/input1
+U: Uniq=
+H: Handlers=kbd event1
+B: PROP=0
+B: EV=3
+B: KEY=8000 10000000000000 0
+
+I: Bus=0019 Vendor=0000 Product=0006 Version=0000
+N: Name="Video Bus"
+P: Phys=LNXVIDEO/video/input0
+S: Sysfs=/devices/pci0000:00/0000:00:08.1/acpi.video_bus.0/input/input5
+U: Uniq=
+H: Handlers=kbd event5
+B: PROP=0
+B: EV=3
+B: KEY=3e000b00000000 0 0 0
+
+I: Bus=0010 Vendor=001f Product=0001 Version=0100
+N: Name="PC Speaker"
+P: Phys=isa0061/input0
+S: Sysfs=/devices/platform/pcspkr/input/input7
+U: Uniq=
+H: Handlers=kbd event7
+B: PROP=0
+B: EV=40001
+B: SND=6
+
+I: Bus=0000 Vendor=0000 Product=0000 Version=0000
+N: Name="HD-Audio Generic HDMI/DP,pcm=3"
+P: Phys=ALSA
+S: Sysfs=/devices/pci0000:00/0000:00:08.1/0000:11:00.1/sound/card1/input9
+U: Uniq=
+H: Handlers=event9
+B: PROP=0
+B: EV=21
+B: SW=140
+
+I: Bus=0005 Vendor=046d Product=b019 Version=0006
+N: Name="Logitech Wireless Mouse MX Master 2S"
+P: Phys=00:11:22:33:44:55
+S: Sysfs=/devices/virtual/misc/uhid/0005:046D:B019.0007/input/input24
+U: Uniq=00:11:22:33:44:55
+H: Handlers=sysrq kbd event21 mouse1
+B: PROP=0
+B: EV=100017
+B: KEY=ffff0000 1000000000007 ff800000000007ff febeffdfffefffff fffffffffffffffe
+B: REL=1943
+B: MSC=10
