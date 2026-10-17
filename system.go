@@ -56,7 +56,13 @@ type Cgroups []*Cgroup
 
 // GetCgroups reads the systems cgroup subsystems, read from /proc/cgroups in
 // the given [Procfs].
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetCgroups(proc Procfs) (Cgroups, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	cs := Cgroups{}
 
 	err := proc.Read("cgroups", &cs)
@@ -168,7 +174,13 @@ type CPUStats struct {
 
 // GetCPUStats reads statistics about processor time and running processed,
 // read from /proc/stat in the given [Procfs].
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetCPUStats(proc Procfs) (*CPUStats, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	cs := new(CPUStats)
 
 	err := proc.Read("stat", cs)
@@ -251,7 +263,13 @@ type LoadAvg struct {
 
 // GetLoadAvg reads system load and scheduling information, from /proc/loadavg
 // in the given [Procfs].
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetLoadAvg(proc Procfs) (*LoadAvg, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	l := new(LoadAvg)
 
 	err := proc.Read("loadavg", l)
@@ -360,7 +378,13 @@ type Meminfo struct {
 
 // GetMeminfo get memory, swap and cache usage information, read from
 // /proc/meminfo in the given [Procfs].
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetMeminfo(proc Procfs) (*Meminfo, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	m := new(Meminfo)
 
 	err := proc.Read("meminfo", m)
@@ -560,7 +584,13 @@ type Modules []*Module
 
 // GetModules reads the currently loaded Linux Kernel modules, from
 // /proc/modules in the given [Procfs].
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetModules(proc Procfs) (Modules, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	ms := Modules{}
 
 	err := proc.Read("modules", &ms)
@@ -632,7 +662,13 @@ type Swaps []*Swap
 
 // GetSwaps reads the swap devices configured for the system, read from
 // proc/swaps in the given [Procfs].
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetSwaps(proc Procfs) (Swaps, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	ss := Swaps{}
 
 	err := proc.Read("swaps", &ss)
@@ -674,7 +710,13 @@ type Uptime struct {
 
 // GetUptime reads system uptime information, read from /proc/uptime in the
 // given [Procfs].
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetUptime(proc Procfs) (*Uptime, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	u := new(Uptime)
 
 	err := proc.Read("uptime", u)
@@ -880,7 +922,13 @@ type VMStat struct {
 
 // GetVMStat gets virtual memory statistics about the system, read from
 // /proc/vmstat in the given [Procfs].
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetVMStat(proc Procfs) (*VMStat, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	vm := &VMStat{}
 
 	err := proc.Read("vmstat", vm)

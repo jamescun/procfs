@@ -75,7 +75,13 @@ type Stat struct {
 
 // GetStat reads the specified process id status information, from
 // /proc/<pid>/stat in the given [Procfs].
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetStat(proc Procfs, pid int) (*Stat, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	s := new(Stat)
 
 	err := proc.Read(strconv.Itoa(pid)+"/stat", s)

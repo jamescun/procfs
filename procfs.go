@@ -18,6 +18,11 @@ import (
 	"unsafe"
 )
 
+// global is the [Procfs] instance used when one isn't specified by a function.
+var global = &procfs{
+	proc: os.DirFS("/proc"),
+}
+
 // Procfs implements reading structured text-based information about a system
 // through the procfs filesystem.
 type Procfs interface {
@@ -51,7 +56,7 @@ type procfs struct {
 // To read from a procfs filesystem mounted elsewhere, such as inside a
 // container and wanting to read the host procfs, see [From].
 func New() Procfs {
-	return From(os.DirFS("/proc"))
+	return global
 }
 
 // From initializes a new [Procfs] with a given [fs.FS] pointing to the procfs

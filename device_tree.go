@@ -40,7 +40,13 @@ type DeviceTree struct {
 //
 // An error will be returned if the system does not use a device tree, or
 // nothing could be read from it.
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetDeviceTree(proc Procfs) (*DeviceTree, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	ok := false
 	dt := &DeviceTree{}
 

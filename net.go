@@ -108,7 +108,13 @@ type LinkStats []*LinkStat
 
 // GetLinkStats reads receive and transmit statistics for the systems network
 // interfaces, read from /proc/net/dev for the given [Procfs].
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetLinkStats(proc Procfs) (LinkStats, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	ls := LinkStats{}
 
 	err := proc.Read("net/dev", &ls)
@@ -225,7 +231,13 @@ type WirelessStats []*WirelessStat
 
 // GetWirelessStats reads statistics about the systems wireless network
 // interfaces, read from /proc/net/wireless in the given [Procfs].
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetWirelessStats(proc Procfs) (WirelessStats, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	ws := WirelessStats{}
 
 	err := proc.Read("net/wireless", &ws)

@@ -50,7 +50,13 @@ type CPUInfo struct {
 
 // GetCPUInfo reads information about the systems processors or processor cores
 // (depending on platform), read from /proc/cpuinfo using the given [Procfs].
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetCPUInfo(proc Procfs) (*CPUInfo, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	c := new(CPUInfo)
 
 	err := proc.Read("cpuinfo", c)

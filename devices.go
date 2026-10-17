@@ -97,7 +97,13 @@ type InputDevices []*InputDevice
 
 // GetInputDevices reads all the devices recognized by the input devices
 // subsystem, read from /proc/bus/input/devices in the given [Procfs].
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetInputDevices(proc Procfs) (InputDevices, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	is := InputDevices{}
 
 	err := proc.Read("bus/input/devices", &is)

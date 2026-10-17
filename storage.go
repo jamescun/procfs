@@ -104,7 +104,13 @@ type DiskStats []*DiskStat
 
 // GetDiskStats reads I/O statistics for the systems block storage devices,
 // read from /proc/diskstats in the given [Procfs].
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetDiskStats(proc Procfs) (DiskStats, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	ds := DiskStats{}
 
 	err := proc.Read("diskstats", &ds)
@@ -166,7 +172,13 @@ type Filesystems []*Filesystem
 
 // GetFilesystems reads the filesystems supported by the kernel, read from
 // /proc/filesystems in the given [Procfs].
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetFilesystems(proc Procfs) (Filesystems, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	fs := Filesystems{}
 
 	err := proc.Read("filesystems", &fs)
@@ -261,7 +273,13 @@ type Mounts []*Mount
 
 // GetMounts reads the mounted filesystems visible in the current process'
 // namespace, read from /proc/self/mountinfo in the given [Procfs].
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetMounts(proc Procfs) (Mounts, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	ms := Mounts{}
 
 	err := proc.Read("self/mountinfo", &ms)
@@ -324,7 +342,13 @@ type Partitions []*Partition
 
 // GetPartitions reads the systems partitions from /proc/partitions in the
 // given [Procfs].
+//
+// If the given [Procfs] is nil, this will read from the default /proc.
 func GetPartitions(proc Procfs) (Partitions, error) {
+	if proc == nil {
+		proc = global
+	}
+
 	ps := Partitions{}
 
 	err := proc.Read("partitions", &ps)
